@@ -9,5 +9,6 @@ app.use(require('../routes/DocumentRoutes'));
 app.use(require('../routes/VesselRoute'));
 app.use(require('../routes/FreightRoutes'));
 app.use(require('../routes/CompanyRoutes'));
+app.use(require('../routes/ContainerRoutes'));
 
 module.exports = app;
