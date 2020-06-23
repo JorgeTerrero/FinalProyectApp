@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { PdfMakeWrapper } from 'pdfmake-wrapper';
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // fonts provided for pdfmake
-import {MatInputModule , MatIconModule , MatTableModule, MatButtonModule, MatPaginatorModule, MatDialogModule} from '@angular/material'
+import {MatInputModule , MatIconModule , MatTableModule, MatButtonModule, MatPaginatorModule, MatDialogModule, MatFormFieldModule} from '@angular/material'
 import { from } from 'rxjs';
 import { VesselComponent } from './components/Vessel/Vessel.component';
 import { CompanyComponent  } from './components/Company/Company.component';
@@ -33,7 +33,8 @@ PdfMakeWrapper.setFonts(pdfFonts);
     MatTableModule,
     MatButtonModule,
     MatPaginatorModule,
-    MatDialogModule
+    MatDialogModule,
+    MatFormFieldModule
   ],
   providers: [],
   bootstrap: [AppComponent]
