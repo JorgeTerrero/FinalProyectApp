@@ -1,0 +1,336 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header bg-dark text-white text-center">
+          Container Module
+        </div>
+        <div class="card-body">
+
+          <button mat-fab color="primary" data-toggle="modal" data-target="#ContainerAddModal">
+            <mat-icon>add_circle_outline</mat-icon>
+          </button>
+
+          <mat-form-field>
+            <mat-label>Filter</mat-label>
+            <input matInput (keyup)="applyFilter($event)" placeholder="Vessel Search">
+          </mat-form-field>
+
+          <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="type">
+              <th mat-header-cell *matHeaderCellDef> Type </th>
+              <td mat-cell *matCellDef="let element"> {{element.type}} </td>
+            </ng-container>
+
+            <!-- Code Column -->
+            <ng-container matColumnDef="payload">
+              <th mat-header-cell *matHeaderCellDef> Payload </th>
+              <td mat-cell *matCellDef="let element"> {{element.payload}} </td>
+            </ng-container>
+
+            <!-- Imo Column -->
+            <ng-container matColumnDef="capacity">
+              <th mat-header-cell *matHeaderCellDef> Capacity </th>
+              <td mat-cell *matCellDef="let element"> {{element.capacity}} </td>
+            </ng-container>
+
+            <!-- Flag Column -->
+            <ng-container matColumnDef="lenght">
+              <th mat-header-cell *matHeaderCellDef> Lenght </th>
+              <td mat-cell *matCellDef="let element"> {{element.lenght}} </td>
+            </ng-container>
+
+            <!-- Slora Column -->
+            <ng-container matColumnDef="width">
+              <th mat-header-cell *matHeaderCellDef> Width </th>
+              <td mat-cell *matCellDef="let element"> {{element.width}} </td>
+            </ng-container>
+
+            <!-- Arrival Column -->
+            <ng-container matColumnDef="height">
+              <th mat-header-cell *matHeaderCellDef> Height </th>
+              <td mat-cell *matCellDef="let element"> {{element.height}} </td>
+            </ng-container>
+
+            <!--view-->
+            <ng-container matColumnDef="ver">
+              <th mat-header-cell *matHeaderCellDef> Ver </th>
+              <td mat-cell *matCellDef="let element">
+                <button mat-icon-button color="primary">
+                  <mat-icon>visibility</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <!--edit-->
+            <ng-container matColumnDef="editar">
+              <th mat-header-cell *matHeaderCellDef> Editar </th>
+              <td mat-cell *matCellDef="let element">
+                <button mat-icon-button color="primary" (click)="GetContainer(element)" data-toggle="modal" data-target="#ContainerEditModal"
+                  aria-label="Example icon button with a heart icon">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <!--eliminar-->
+            <ng-container matColumnDef="eliminar">
+              <th mat-header-cell *matHeaderCellDef> Eliminar </th>
+              <td mat-cell *matCellDef="let element">
+                <button mat-icon-button color="primary" (click)="onContainerDelete(element)" aria-label="Example icon button with a heart icon">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+
+            <tr mat-header-row *matHeaderRowDef="displayColums"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayColums;"></tr>
+          </table>
+          <mat-paginator [pageSizeOptions]="[5, 10, 25, 50, 100]"></mat-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Add Container Modal-->
+<div class="modal fade" id="ContainerAddModal" tabindex="-1" role="dialog" aria-labelledby="VesselModalAdd" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-center text-white">
+        <h5 class="modal-title" id="exampleModalLabel">
+          <mat-icon aria-hidden="false" aria-label="Example home icon">anchor</mat-icon>
+          Add Vessel Modal
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+       <form [formGroup]="containerForm" (ngSubmit)="onContainerAdd(containerForm)">
+      <div class="modal-body">
+       
+
+          <!--Type Form-->
+          <div class="form-group">
+
+            <mat-form-field appearance="legacy">
+              <mat-label>Container Type</mat-label>
+              <input matInput placeholder="Enter Container Type" formControlName="type" required>
+              <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+              <mat-hint>Hint</mat-hint>
+              <mat-error *ngIf="containerForm.controls.type.hasError('required')">
+                Container Type is Required
+              </mat-error>
+            </mat-form-field>
+
+          </div>
+
+            <!--Payload Form-->
+            <div class="form-group">
+
+              <mat-form-field appearance="legacy">
+                <mat-label>Container Payload</mat-label>
+                <input type="number" matInput placeholder="Enter Container Type" formControlName="payload" required>
+                <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+                <mat-hint>Hint</mat-hint>
+                <mat-error *ngIf="containerForm.controls.payload.hasError('required')">
+                  Container Payload is Required
+                </mat-error>
+              </mat-form-field>
+  
+            </div>
+
+              <!--Capacity Form-->
+              <div class="form-group">
+
+                <mat-form-field appearance="legacy">
+                  <mat-label>Container Capacity</mat-label>
+                  <input type="number" matInput placeholder="Enter Container Capacity" formControlName="capacity" required>
+                  <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+                  <mat-hint>Hint</mat-hint>
+                  <mat-error *ngIf="containerForm.controls.capacity.hasError('required')">
+                    Container Capacity is Required
+                  </mat-error>
+                </mat-form-field>
+    
+              </div>
+
+              <!--Lenght Form-->
+              <div class="form-group">
+
+                <mat-form-field appearance="legacy">
+                  <mat-label>Container Lenght</mat-label>
+                  <input type="number" matInput placeholder="Enter Container Type" formControlName="lenght" required>
+                  <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+                  <mat-hint>Hint</mat-hint>
+                  <mat-error *ngIf="containerForm.controls.lenght.hasError('required')">
+                    Container Lenght is Required
+                  </mat-error>
+                </mat-form-field>
+    
+              </div>
+
+              <!--width Form-->
+              <div class="form-group">
+
+                <mat-form-field appearance="legacy">
+                  <mat-label>Container Width</mat-label>
+                  <input type="number" matInput placeholder="Enter Container Type" formControlName="width" required>
+                  <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+                  <mat-hint>Hint</mat-hint>
+                  <mat-error *ngIf="containerForm.controls.width.hasError('required')">
+                    Container Width is Required
+                  </mat-error>
+                </mat-form-field>
+    
+              </div>
+
+               <!--Height Form-->
+               <div class="form-group">
+
+                <mat-form-field appearance="legacy">
+                  <mat-label>Container Height</mat-label>
+                  <input type="number" matInput placeholder="Enter Container Type" formControlName="height" required>
+                  <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+                  <mat-hint>Hint</mat-hint>
+                  <mat-error *ngIf="containerForm.controls.height.hasError('required')">
+                    Container Height is Required
+                  </mat-error>
+                </mat-form-field>
+    
+              </div>
+
+           
+      </div>
+      <div class="modal-footer">
+        <button mat-icon-button  [disabled]="!containerForm.valid"  aria-label="Example icon button with a vertical three dot icon">
+          <mat-icon color="primary">send</mat-icon>
+        </button>
+      </div>
+       </form>
+    </div>
+  </div>
+</div>
+
+
+<!--Edit Container Modal-->
+<div class="modal fade" id="ContainerEditModal" tabindex="-1" role="dialog" aria-labelledby="VesselModalAdd" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-center text-white">
+        <h5 class="modal-title" id="exampleModalLabel">
+          <mat-icon aria-hidden="false" aria-label="Example home icon">anchor</mat-icon>
+          Edit Vessel Modal
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+       <form [formGroup]="containerForm" (ngSubmit)="onContainerEdit(containerForm)">
+      <div class="modal-body">
+       
+
+          <!--Type Form-->
+          <div class="form-group">
+
+            <mat-form-field appearance="legacy">
+              <mat-label>Container Type</mat-label>
+              <input matInput placeholder="Enter Container Type" formControlName="type" required>
+              <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+              <mat-hint>Hint</mat-hint>
+              <mat-error *ngIf="containerForm.controls.type.hasError('required')">
+                Container Type is Required
+              </mat-error>
+            </mat-form-field>
+
+          </div>
+
+            <!--Payload Form-->
+            <div class="form-group">
+
+              <mat-form-field appearance="legacy">
+                <mat-label>Container Payload</mat-label>
+                <input type="number" matInput placeholder="Enter Container Type" formControlName="payload" required>
+                <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+                <mat-hint>Hint</mat-hint>
+                <mat-error *ngIf="containerForm.controls.payload.hasError('required')">
+                  Container Payload is Required
+                </mat-error>
+              </mat-form-field>
+  
+            </div>
+
+              <!--Capacity Form-->
+              <div class="form-group">
+
+                <mat-form-field appearance="legacy">
+                  <mat-label>Container Capacity</mat-label>
+                  <input type="number" matInput placeholder="Enter Container Capacity" formControlName="capacity" required>
+                  <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+                  <mat-hint>Hint</mat-hint>
+                  <mat-error *ngIf="containerForm.controls.capacity.hasError('required')">
+                    Container Capacity is Required
+                  </mat-error>
+                </mat-form-field>
+    
+              </div>
+
+              <!--Lenght Form-->
+              <div class="form-group">
+
+                <mat-form-field appearance="legacy">
+                  <mat-label>Container Lenght</mat-label>
+                  <input type="number" matInput placeholder="Enter Container Type" formControlName="lenght" required>
+                  <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+                  <mat-hint>Hint</mat-hint>
+                  <mat-error *ngIf="containerForm.controls.lenght.hasError('required')">
+                    Container Lenght is Required
+                  </mat-error>
+                </mat-form-field>
+    
+              </div>
+
+              <!--width Form-->
+              <div class="form-group">
+
+                <mat-form-field appearance="legacy">
+                  <mat-label>Container Width</mat-label>
+                  <input type="number" matInput placeholder="Enter Container Type" formControlName="width" required>
+                  <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+                  <mat-hint>Hint</mat-hint>
+                  <mat-error *ngIf="containerForm.controls.width.hasError('required')">
+                    Container Width is Required
+                  </mat-error>
+                </mat-form-field>
+    
+              </div>
+
+               <!--Height Form-->
+               <div class="form-group">
+
+                <mat-form-field appearance="legacy">
+                  <mat-label>Container Height</mat-label>
+                  <input type="number" matInput placeholder="Enter Container Type" formControlName="height" required>
+                  <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+                  <mat-hint>Hint</mat-hint>
+                  <mat-error *ngIf="containerForm.controls.height.hasError('required')">
+                    Container Height is Required
+                  </mat-error>
+                </mat-form-field>
+    
+              </div>
+
+           
+      </div>
+      <div class="modal-footer">
+        <button mat-icon-button  [disabled]="!containerForm.valid"  aria-label="Example icon button with a vertical three dot icon">
+          <mat-icon color="primary">send</mat-icon>
+        </button>
+      </div>
+       </form>
+    </div>
+  </div>
+</div>
