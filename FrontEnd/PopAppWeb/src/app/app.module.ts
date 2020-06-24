@@ -11,6 +11,7 @@ import { from } from 'rxjs';
 import { VesselComponent } from './components/Vessel/Vessel.component';
 import { CompanyComponent  } from './components/Company/Company.component';
 import { FormsModule } from '@angular/forms';
+import { ContainerComponent } from './components/Container/Container.component';
 
  
 // Set the fonts to use
@@ -20,7 +21,8 @@ PdfMakeWrapper.setFonts(pdfFonts);
   declarations: [
     AppComponent,
     VesselComponent,
-    CompanyComponent
+    CompanyComponent,
+    ContainerComponent
   ],
   imports: [
     BrowserModule,
