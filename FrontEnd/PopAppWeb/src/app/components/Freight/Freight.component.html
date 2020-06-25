@@ -1,0 +1,274 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+        <div class="card">
+          <div class="card-header bg-dark text-center text-white">
+            Freight Module
+          </div>
+          <div class="card-body">
+
+            <button mat-fab color="primary" data-toggle="modal" data-target="#FreightAddModal">
+              <mat-icon>add_circle_outline</mat-icon>
+            </button>
+  
+            <mat-form-field>
+              <mat-label>Filter</mat-label>
+              <input matInput (keyup)="applyFilter($event)" placeholder="Vessel Search">
+            </mat-form-field>
+  
+            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+  
+              <!-- Code Column -->
+              <ng-container matColumnDef="code">
+                <th mat-header-cell *matHeaderCellDef> Code </th>
+                <td mat-cell *matCellDef="let element"> {{element.code}} </td>
+              </ng-container>
+
+              <!-- Description Column -->
+              <ng-container matColumnDef="description">
+                <th mat-header-cell *matHeaderCellDef> Description </th>
+                <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+              </ng-container>
+
+              <!-- Type Column -->
+              <ng-container matColumnDef="type">
+                <th mat-header-cell *matHeaderCellDef> Type </th>
+                <td mat-cell *matCellDef="let element"> {{element.type}} </td>
+              </ng-container>
+
+               <!-- Weight Column -->
+               <ng-container matColumnDef="weight">
+                <th mat-header-cell *matHeaderCellDef> Weight </th>
+                <td mat-cell *matCellDef="let element"> {{element.weight}} </td>
+              </ng-container>
+
+              
+              <!--view-->
+              <ng-container matColumnDef="ver">
+                <th mat-header-cell *matHeaderCellDef> Ver </th>
+                <td mat-cell *matCellDef="let element">
+                  <button mat-icon-button color="primary">
+                    <mat-icon>visibility</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+  
+              <!--edit-->
+              <ng-container matColumnDef="editar">
+                <th mat-header-cell *matHeaderCellDef> Editar </th>
+                <td mat-cell *matCellDef="let element">
+                  <button mat-icon-button color="primary" (click)="GetFreight(element)" data-toggle="modal" data-target="#FreightEditModal"
+                    aria-label="Example icon button with a heart icon">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+  
+              <!--eliminar-->
+              <ng-container matColumnDef="eliminar">
+                <th mat-header-cell *matHeaderCellDef> Eliminar </th>
+                <td mat-cell *matCellDef="let element">
+                  <button mat-icon-button color="primary" (click)="onFreightDelete(element)"  aria-label="Example icon button with a heart icon">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+  
+  
+              <tr mat-header-row *matHeaderRowDef="displayColums"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayColums;"></tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 25, 50, 100]"></mat-paginator>
+
+
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+<!--Add Container Modal-->
+<div class="modal fade" id="FreightAddModal" tabindex="-1" role="dialog" aria-labelledby="VesselModalAdd" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-center text-white">
+        <h5 class="modal-title" id="exampleModalLabel">
+          <mat-icon aria-hidden="false" aria-label="Example home icon">anchor</mat-icon>
+          Add Vessel Modal
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+       <form [formGroup]="FreightForm" (ngSubmit)="onFreightAdd(FreightForm)">
+      <div class="modal-body">
+       
+
+          <!--Code Form-->
+          <div class="form-group">
+
+            <mat-form-field appearance="legacy">
+              <mat-label>Freight Code</mat-label>
+              <input matInput placeholder="Enter Freight Code" formControlName="code" required>
+              <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+              <mat-hint>Hint</mat-hint>
+              <mat-error *ngIf="FreightForm.controls.code.hasError('required')">
+                Freight Code is Required
+              </mat-error>
+            </mat-form-field>
+
+          </div>
+
+
+             <!--Type Form-->
+          <div class="form-group">
+
+            <mat-form-field appearance="legacy">
+              <mat-label>Freight Type</mat-label>
+              <input matInput placeholder="Enter Freight Code" formControlName="type" required>
+              <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+              <mat-hint>Hint</mat-hint>
+              <mat-error *ngIf="FreightForm.controls.type.hasError('required')">
+                Freight Weight is Required
+              </mat-error>
+            </mat-form-field>
+
+          </div>
+
+           <!--Weight Form-->
+           <div class="form-group">
+
+            <mat-form-field appearance="legacy">
+              <mat-label>Freight Weight</mat-label>
+              <input type="number" matInput placeholder="Enter Freight Code" formControlName="weight" required>
+              <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+              <mat-hint>Hint</mat-hint>
+              <mat-error *ngIf="FreightForm.controls.weight.hasError('required')">
+                Freight Code is Required
+              </mat-error>
+            </mat-form-field>
+
+          </div>
+
+           <!--Description Form-->
+
+           <div class="form-group">
+
+
+            <mat-form-field class="example-full-width">
+              <mat-label>Freight Description</mat-label>
+              <textarea formControlName="description" matInput placeholder="Ex. Yuor Freight Description."></textarea>
+              <mat-error *ngIf="FreightForm.controls.weight.hasError('required')">
+               Freight Description is Required
+             </mat-error>
+            </mat-form-field>
+
+          </div>
+
+          
+
+
+           
+      </div>
+      <div class="modal-footer">
+        <button mat-icon-button  [disabled]="!FreightForm.valid"  aria-label="Example icon button with a vertical three dot icon">
+          <mat-icon color="primary">send</mat-icon>
+        </button>
+      </div>
+       </form>
+    </div>
+  </div>
+</div>
+
+<!--Edit Container Modal-->
+<div class="modal fade" id="FreightEditModal" tabindex="-1" role="dialog" aria-labelledby="VesselModalAdd" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-center text-white">
+        <h5 class="modal-title" id="exampleModalLabel">
+          <mat-icon aria-hidden="false" aria-label="Example home icon">anchor</mat-icon>
+          Edit Vessel Modal
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+       <form [formGroup]="FreightForm" (ngSubmit)="onFreightEdit(FreightForm)">
+      <div class="modal-body">
+       
+
+          <!--Code Form-->
+          <div class="form-group">
+
+            <mat-form-field appearance="legacy">
+              <mat-label>Freight Code</mat-label>
+              <input matInput placeholder="Enter Freight Code" formControlName="code" required>
+              <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+              <mat-hint>Hint</mat-hint>
+              <mat-error *ngIf="FreightForm.controls.code.hasError('required')">
+                Freight Code is Required
+              </mat-error>
+            </mat-form-field>
+
+          </div>
+
+
+             <!--Type Form-->
+          <div class="form-group">
+
+            <mat-form-field appearance="legacy">
+              <mat-label>Freight Type</mat-label>
+              <input matInput placeholder="Enter Freight Code" formControlName="type" required>
+              <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+              <mat-hint>Hint</mat-hint>
+              <mat-error *ngIf="FreightForm.controls.type.hasError('required')">
+                Freight Weight is Required
+              </mat-error>
+            </mat-form-field>
+
+          </div>
+
+           <!--Weight Form-->
+           <div class="form-group">
+
+            <mat-form-field appearance="legacy">
+              <mat-label>Freight Weight</mat-label>
+              <input type="number" matInput placeholder="Enter Freight Code" formControlName="weight" required>
+              <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+              <mat-hint>Hint</mat-hint>
+              <mat-error *ngIf="FreightForm.controls.weight.hasError('required')">
+                Freight Code is Required
+              </mat-error>
+            </mat-form-field>
+
+          </div>
+
+           <!--Description Form-->
+
+           <div class="form-group">
+
+
+            <mat-form-field class="example-full-width">
+              <mat-label>Freight Description</mat-label>
+              <textarea formControlName="description" matInput placeholder="Ex. Yuor Freight Description."></textarea>
+              <mat-error *ngIf="FreightForm.controls.weight.hasError('required')">
+               Freight Description is Required
+             </mat-error>
+            </mat-form-field>
+
+          </div>
+
+          
+
+
+           
+      </div>
+      <div class="modal-footer">
+        <button mat-icon-button  [disabled]="!FreightForm.valid"  aria-label="Example icon button with a vertical three dot icon">
+          <mat-icon color="primary">send</mat-icon>
+        </button>
+      </div>
+       </form>
+    </div>
+  </div>
+</div>
