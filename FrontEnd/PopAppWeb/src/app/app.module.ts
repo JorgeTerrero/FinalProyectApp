@@ -14,6 +14,7 @@ import { FormsModule } from '@angular/forms';
 import { ContainerComponent } from './components/Container/Container.component';
 import { FreightComponent } from './components/Freight/Freight.component';
 import { ProductComponent } from './components/Product/Product.component';
+import { DocumentComponent } from './components/Document/Document.component';
 
  
 // Set the fonts to use
@@ -26,7 +27,8 @@ PdfMakeWrapper.setFonts(pdfFonts);
     CompanyComponent,
     ContainerComponent,
     FreightComponent,
-    ProductComponent
+    ProductComponent,
+    DocumentComponent
   ],
   imports: [
     BrowserModule,
@@ -40,7 +42,7 @@ PdfMakeWrapper.setFonts(pdfFonts);
     MatButtonModule,
     MatPaginatorModule,
     MatDialogModule,
-    MatFormFieldModule
+    MatFormFieldModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
