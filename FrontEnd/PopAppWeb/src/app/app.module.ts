@@ -13,6 +13,7 @@ import { CompanyComponent  } from './components/Company/Company.component';
 import { FormsModule } from '@angular/forms';
 import { ContainerComponent } from './components/Container/Container.component';
 import { FreightComponent } from './components/Freight/Freight.component';
+import { ProductComponent } from './components/Product/Product.component';
 
  
 // Set the fonts to use
@@ -24,7 +25,8 @@ PdfMakeWrapper.setFonts(pdfFonts);
     VesselComponent,
     CompanyComponent,
     ContainerComponent,
-    FreightComponent
+    FreightComponent,
+    ProductComponent
   ],
   imports: [
     BrowserModule,
