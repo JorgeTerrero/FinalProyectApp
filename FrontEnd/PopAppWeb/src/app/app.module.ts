@@ -16,7 +16,7 @@ import { FreightComponent } from './components/Freight/Freight.component';
 import { ProductComponent } from './components/Product/Product.component';
 import { DocumentComponent } from './components/Document/Document.component';
 import { UserComponent } from './components/User/User.component';
-
+import {HttpClientModule} from '@angular/common/http';
  
 // Set the fonts to use
 PdfMakeWrapper.setFonts(pdfFonts);
@@ -45,6 +45,7 @@ PdfMakeWrapper.setFonts(pdfFonts);
     MatPaginatorModule,
     MatDialogModule,
     MatFormFieldModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

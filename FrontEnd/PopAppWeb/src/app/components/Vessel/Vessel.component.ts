@@ -4,6 +4,7 @@ import {MatTableDataSource} from '@angular/material/table';
 import { MatPaginator, MatDialog } from '@angular/material';
 import {ErrorStateMatcher} from '@angular/material/core';
 import { FormGroup, FormControl , Validators } from '@angular/forms';
+import { VesselService } from 'src/app/services/Vessel.service';
 declare let alertify: any;
 
 
@@ -20,41 +21,31 @@ export class VesselComponent implements OnInit {
   
 
 
-  vessel_Data: Vessel[] = [
-    {
-      name: "name1",
-      code: "code1",
-      imo: "imo1",
-      flag: "flag1",
-      slora: "slora1",
-      arrival: "arrival",
-    },
-    {
-      name: "name2",
-      code: "code2",
-      imo: "imo2",
-      flag: "flag2",
-      slora: "slora2",
-      arrival: "arriva2",
-    },
-  ];
+  vesselArr: Vessel[];
 
   displayColums: string[] =  ["name" , "code" , "imo" , "flag" , "slora" , "arrival" , "ver" , "editar" , "eliminar"];
-  dataSource = new MatTableDataSource(this.vessel_Data);
+  dataSource;
 
   vesselForm = new FormGroup({
+      _id: new FormControl(""),
       name: new FormControl("" , Validators.required),
       code: new FormControl("" , Validators.required),
       imo: new FormControl("" , Validators.required),
       flag: new FormControl("" , Validators.required),
       slora: new FormControl("" , Validators.required),
       arrival: new FormControl("" , Validators.required),
+      status: new FormControl("")
   });
 
-  constructor() {}
+  constructor(private vesselService: VesselService) {}
 
   ngOnInit() {
-    this.dataSource.paginator = this.paginator;
+    this.vesselService.GetVessels().subscribe((resp: any) => {
+      this.vesselArr = resp.vessel;
+      this.dataSource = new MatTableDataSource(this.vesselArr);
+      this.dataSource.paginator = this.paginator;
+      }
+      );
   }
 
   //methods filters
@@ -73,53 +64,91 @@ export class VesselComponent implements OnInit {
    onVesselAddSubmit(form: FormGroup){
      //alertify.success('Ready');
     // console.log(this.vesselForm.value);
+    const vessel: Vessel = form.value;
 
-    alertify.confirm('Save Vessel', 
-    'Do You Want Save this Vessel', function(){
-      console.log(form.value); 
-      form.reset();
-      alertify.success('Ok') 
+    this.vesselService.CreateVessel(vessel).subscribe((resp: any)=>{
+      
+      if(resp.ok === true){
+        this.vesselArr = [...this.vesselArr];
+      }
+
+      alertify.confirm('Save Vessel', 
+    'Do You Want Save this Vessel?', function(){
+      
+      if(resp.ok === true){
+        form.reset();
+        alertify.success(resp.message); 
+
+      }
     } , function(){ 
                   alertify.error('Cancel');
                 });
+
+    })
+
+    
 
 
    }
 
    //get Vessel Method
    onGetVessel(element: any){
-     //this.vesselForm.controls.name.setValue(element.name);
-     this.vesselForm.setValue(element);
+     this.vesselForm.controls._id.setValue(element._id);
+     this.vesselForm.controls.name.setValue(element.name);
+     this.vesselForm.controls.code.setValue(element.code);
+     this.vesselForm.controls.imo.setValue(element.imo);
+     this.vesselForm.controls.flag.setValue(element.flag);
+     this.vesselForm.controls.slora.setValue(element.slora);
+     this.vesselForm.controls.arrival.setValue(element.arrival);
+
    }
 
    //Edit Vessel Method
    onVesselEditSubmit(form: FormGroup){
-    alertify.confirm('Update Vessel', 
+
+    const vessel: Vessel = {
+      name: form.value.name,
+      code: form.value.code,
+      imo: form.value.imo,
+      flag: form.value.flag,
+      slora: form.value.slora,
+      arrival: form.value.arrival
+    };
+    
+    this.vesselService.UpdateVessel(form.value._id , vessel)
+    .subscribe((resp: any) => {
+
+      alertify.confirm('Update Vessel', 
     'Do You Want Update this Vessel?', function(){
-      console.log(form.value); 
-      //form.reset();
-      alertify.success('Ok') 
+        if(resp.ok){
+          alertify.success(resp.message); 
+        }
     } , function(){ 
                   alertify.error('Cancel');
                 });
+    });
+
+    
+    
    }
 
    //delete Vessel Method
    onVesselDelete(element){
-    alertify.confirm('Delete Vessel', 
+     
+    this.vesselService.DeleteVessel(element._id)
+    .subscribe((resp: any) => {
+      
+      alertify.confirm('Delete Vessel', 
     'Do You Want Delete this Vessel?', function(){
-      console.log("element Deleted")
-      alertify.success('Ok') 
+      if(resp.ok){
+        alertify.success(resp.message); 
+      }
     } , function(){ 
                   alertify.error('Cancel');
                 });
+
+    });
    }
 
-
-
-   //alertify
-   successAlertify(){
-     alertify.success("Ready");
-   }
 
 }

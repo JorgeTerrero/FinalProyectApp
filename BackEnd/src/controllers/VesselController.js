@@ -5,7 +5,7 @@ const _vessel = {};
 _vessel.GetAllVessels = async (req, res) => {
     try {
 
-        const vessel = await vesselModel.find();
+        const vessel = await vesselModel.find({status: true});
         res.json({
             ok: true,
             vessel
