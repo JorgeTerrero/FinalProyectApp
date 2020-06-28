@@ -5,7 +5,7 @@ _company.GetAllCompanies = async (req , res) =>{
 
     try {
 
-        const company = await companyModel.find();
+        const company = await companyModel.find({status: true});
         res.json({
             ok: true,
             company
