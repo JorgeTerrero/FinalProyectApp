@@ -1,0 +1,286 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header bg-dark text-center text-white">
+          User Module
+        </div>
+        <div class="card-body">
+
+          <button mat-fab color="primary" data-toggle="modal" data-target="#UserAddModal">
+            <mat-icon>add_circle_outline</mat-icon>
+          </button>
+
+          <mat-form-field>
+            <mat-label>Filter</mat-label>
+            <input matInput (keyup)="applyFilter($event)" placeholder="Vessel Search">
+          </mat-form-field>
+
+          <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+  
+            <!-- UserName Column -->
+            <ng-container matColumnDef="username">
+              <th mat-header-cell *matHeaderCellDef> Username </th>
+              <td mat-cell *matCellDef="let element"> {{element.username}} </td>
+            </ng-container>
+             <!-- Email Column -->
+             <ng-container matColumnDef="email">
+              <th mat-header-cell *matHeaderCellDef> Email </th>
+              <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+            </ng-container>
+            <!-- PasswordHalt Column -->
+            <ng-container matColumnDef="passwordHalt">
+              <th mat-header-cell *matHeaderCellDef> PasswordHalt </th>
+              <td mat-cell *matCellDef="let element"> {{element.passwordHalt}} </td>
+            </ng-container>
+            <!-- PasswordSalt Column -->
+            <ng-container matColumnDef="passwordSalt">
+              <th mat-header-cell *matHeaderCellDef> PasswordSalt </th>
+              <td mat-cell *matCellDef="let element"> {{element.passwordSalt}} </td>
+            </ng-container>
+            <!-- Role Column -->
+            <ng-container matColumnDef="role">
+              <th mat-header-cell *matHeaderCellDef> Role </th>
+              <td mat-cell *matCellDef="let element"> {{element.role}} </td>
+            </ng-container>
+
+            
+
+            <!--view-->
+            <ng-container matColumnDef="ver">
+              <th mat-header-cell *matHeaderCellDef> Ver </th>
+              <td mat-cell *matCellDef="let element">
+                <button mat-icon-button color="primary">
+                  <mat-icon>visibility</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <!--edit-->
+            <ng-container matColumnDef="editar">
+              <th mat-header-cell *matHeaderCellDef> Editar </th>
+              <td mat-cell *matCellDef="let element">
+                <button mat-icon-button color="primary" (click)="GetUser(element)" data-toggle="modal" data-target="#UserEditModal"
+                  aria-label="Example icon button with a heart icon">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <!--eliminar-->
+            <ng-container matColumnDef="eliminar">
+              <th mat-header-cell *matHeaderCellDef> Eliminar </th>
+              <td mat-cell *matCellDef="let element">
+                <button mat-icon-button color="primary" (click)="onUserDelete(element)"  aria-label="Example icon button with a heart icon">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+
+            <tr mat-header-row *matHeaderRowDef="displayColums"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayColums;"></tr>
+          </table>
+          <mat-paginator [pageSizeOptions]="[5, 10, 25, 50, 100]"></mat-paginator>
+
+
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Add Product Modal-->
+<div class="modal fade" id="UserAddModal" tabindex="-1" role="dialog" aria-labelledby="VesselModalAdd" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-center text-white">
+        <h5 class="modal-title" id="exampleModalLabel">
+          <mat-icon aria-hidden="false" aria-label="Example home icon">anchor</mat-icon>
+          Add User Modal
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+       <form [formGroup]="userForm" (ngSubmit)="onUserAdd(userForm)">
+      <div class="modal-body">
+       
+
+          <!-- Username Form-->
+          <div class="form-group">
+
+            <mat-form-field appearance="legacy">
+              <mat-label>Username</mat-label>
+              <input matInput placeholder="Enter Username" formControlName="username" required>
+              <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+              <mat-hint>Hint</mat-hint>
+              <mat-error *ngIf="userForm.controls.username.hasError('required')">
+                Username is Required
+              </mat-error>
+            </mat-form-field>
+
+          </div>
+
+          <!-- Email Form-->
+          <div class="form-group">
+
+            <mat-form-field appearance="legacy">
+              <mat-label>User Email</mat-label>
+              <input type="email" matInput placeholder="Enter User Email" formControlName="email" required>
+              <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+              <mat-hint>Hint</mat-hint>
+              <mat-error *ngIf="userForm.controls.username.hasError('required')">
+                Username is Required
+              </mat-error>
+              <mat-error *ngIf="userForm.controls.email.hasError('email') && !userForm.controls.email.hasError('required')">
+                Please enter a valid email address
+              </mat-error>
+            </mat-form-field>
+
+          </div>
+
+          <!-- PasswordHalt Form-->
+          <div class="form-group">
+
+            <mat-form-field appearance="legacy">
+              <mat-label>PasswordHalt</mat-label>
+              <input type="password" matInput placeholder="Enter User Password" formControlName="passwordHalt" required>
+              <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+              <mat-hint>Hint</mat-hint>
+              <mat-error *ngIf="userForm.controls.passwordHalt.hasError('required')">
+                Password is Required
+              </mat-error>
+            </mat-form-field>
+
+          </div>
+
+          <!-- Role Form-->
+          <div class="form-group">
+
+            <mat-form-field appearance="legacy">
+              <mat-label>User Role</mat-label>
+              <input matInput placeholder="Enter User Password" formControlName="role" required>
+              <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+              <mat-hint>Hint</mat-hint>
+              <mat-error *ngIf="userForm.controls.role.hasError('required')">
+                Role is Required
+              </mat-error>
+            </mat-form-field>
+
+          </div>
+
+
+
+          
+
+           
+      </div>
+      <div class="modal-footer">
+        <button mat-icon-button  [disabled]="!userForm.valid"  aria-label="Example icon button with a vertical three dot icon">
+          <mat-icon color="primary">send</mat-icon>
+        </button>
+      </div>
+       </form>
+    </div>
+  </div>
+</div>
+
+
+<!--Edit Product Modal-->
+<div class="modal fade" id="UserEditModal" tabindex="-1" role="dialog" aria-labelledby="VesselModalAdd" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-center text-white">
+        <h5 class="modal-title" id="exampleModalLabel">
+          <mat-icon aria-hidden="false" aria-label="Example home icon">anchor</mat-icon>
+          Edit User Modal
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+       <form [formGroup]="userForm" (ngSubmit)="onUserEdit(userForm)">
+      <div class="modal-body">
+       
+
+          <!-- Username Form-->
+          <div class="form-group">
+
+            <mat-form-field appearance="legacy">
+              <mat-label>Username</mat-label>
+              <input matInput placeholder="Enter Username" formControlName="username" required>
+              <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+              <mat-hint>Hint</mat-hint>
+              <mat-error *ngIf="userForm.controls.username.hasError('required')">
+                Username is Required
+              </mat-error>
+            </mat-form-field>
+
+          </div>
+
+          <!-- Email Form-->
+          <div class="form-group">
+
+            <mat-form-field appearance="legacy">
+              <mat-label>User Email</mat-label>
+              <input type="email" matInput placeholder="Enter User Email" formControlName="email" required>
+              <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+              <mat-hint>Hint</mat-hint>
+              <mat-error *ngIf="userForm.controls.username.hasError('required')">
+                Username is Required
+              </mat-error>
+              <mat-error *ngIf="userForm.controls.email.hasError('email') && !userForm.controls.email.hasError('required')">
+                Please enter a valid email address
+              </mat-error>
+            </mat-form-field>
+
+          </div>
+
+          <!-- PasswordHalt Form-->
+          <div class="form-group">
+
+            <mat-form-field appearance="legacy">
+              <mat-label>PasswordHalt</mat-label>
+              <input type="password" matInput placeholder="Enter User Password" formControlName="passwordHalt" required>
+              <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+              <mat-hint>Hint</mat-hint>
+              <mat-error *ngIf="userForm.controls.passwordHalt.hasError('required')">
+                Password is Required
+              </mat-error>
+            </mat-form-field>
+
+          </div>
+
+          <!-- Role Form-->
+          <div class="form-group">
+
+            <mat-form-field appearance="legacy">
+              <mat-label>User Role</mat-label>
+              <input matInput placeholder="Enter User Password" formControlName="role" required>
+              <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+              <mat-hint>Hint</mat-hint>
+              <mat-error *ngIf="userForm.controls.role.hasError('required')">
+                Role is Required
+              </mat-error>
+            </mat-form-field>
+
+          </div>
+
+
+
+          
+
+           
+      </div>
+      <div class="modal-footer">
+        <button mat-icon-button  [disabled]="!userForm.valid"  aria-label="Example icon button with a vertical three dot icon">
+          <mat-icon color="primary">send</mat-icon>
+        </button>
+      </div>
+       </form>
+    </div>
+  </div>
+</div>

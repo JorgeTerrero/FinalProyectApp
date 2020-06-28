@@ -15,6 +15,7 @@ import { ContainerComponent } from './components/Container/Container.component';
 import { FreightComponent } from './components/Freight/Freight.component';
 import { ProductComponent } from './components/Product/Product.component';
 import { DocumentComponent } from './components/Document/Document.component';
+import { UserComponent } from './components/User/User.component';
 
  
 // Set the fonts to use
@@ -28,7 +29,8 @@ PdfMakeWrapper.setFonts(pdfFonts);
     ContainerComponent,
     FreightComponent,
     ProductComponent,
-    DocumentComponent
+    DocumentComponent,
+    UserComponent
   ],
   imports: [
     BrowserModule,
