@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Container } from 'src/app/Models/Container';
-import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { MatPaginator, MatTableDataSource, throwMatDialogContentAlreadyAttachedError } from '@angular/material';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { ContainerService } from 'src/app/services/Container.service';
 declare let alertify: any;
 
 @Component({
@@ -15,20 +16,14 @@ export class ContainerComponent implements OnInit {
  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
   //container arr
-  containerArr: Container[] = [{
-     type: "type1",
-     payload:5,
-     capacity: 12 , 
-     lenght:5 ,
-     width:100,
-     height:200,
-  }];
+  containerArr: Container[] = []
 
   displayColums: string[] =  ["type" , "payload" , "capacity" , "lenght" , "width" , "height" , "ver" , "editar" , "eliminar"];
-  dataSource = new MatTableDataSource(this.containerArr);
+  dataSource;
 
   //container Form
   containerForm = new FormGroup({
+    _id: new FormControl(""),
     type: new FormControl("" , Validators.required),
     payload: new FormControl("" , Validators.required),
     capacity: new FormControl("" , Validators.required) , 
@@ -37,10 +32,17 @@ export class ContainerComponent implements OnInit {
     height: new FormControl("" , Validators.required),
   });
 
-  constructor() { }
+  constructor(private containerService: ContainerService) { }
 
   ngOnInit() {
-    this.dataSource.paginator = this.paginator;
+
+    this.containerService.GetContainer().subscribe((resp:any)=>{
+      this.containerArr = resp.containers;
+      this.dataSource = new MatTableDataSource(this.containerArr);
+      this.dataSource.paginator = this.paginator;
+    });
+
+    
   }
 
     //methods filters
@@ -57,46 +59,91 @@ export class ContainerComponent implements OnInit {
 
     //get Container
     GetContainer(element){
-      this.containerForm.setValue(element);
+      this.containerForm.controls._id.setValue(element._id);
+      this.containerForm.controls.type.setValue(element.type);
+      this.containerForm.controls.payload.setValue(element.payload);
+      this.containerForm.controls.capacity.setValue(element.capacity);
+      this.containerForm.controls.lenght.setValue(element.lenght);
+      this.containerForm.controls.width.setValue(element.width);
+      this.containerForm.controls.height.setValue(element.height);
     }
 
     //Add Container Method
     onContainerAdd(form:FormGroup){
 
-      alertify.confirm('Save Vessel', 
-      'Do You Want Save this Vessel', function(){
-        console.log(form.value); 
-        form.reset();
-        alertify.success('Ok') 
-      } , function(){ 
-                    alertify.error('Cancel');
-                  });
+      const container: Container ={
+        type: form.value.type,
+        payload: form.value.payload,
+        capacity: form.value.capacity,
+        lenght: form.value.lenght,
+        width: form.value.width,
+        height: form.value.height
+      };
+
+      this.containerService.CreateContainer(container).subscribe((resp: any)=>{
+
+        alertify.confirm(
+          "Save Container",
+          "Do You Want Save this Container?",
+          function () {
+            if(resp.ok){
+              form.reset();
+            alertify.success(resp.message);
+            }
+          },
+          function () {
+            alertify.error("Cancel");
+          }
+        );
+
+      });
 
     }
 
     //Edit Container Method
     onContainerEdit(form:FormGroup){
 
-      alertify.confirm('Edit Container', 
-      'Do You Want Save this Container', function(){
-        console.log(form.value); 
-        alertify.success('Ok') 
-      } , function(){ 
-                    alertify.error('Cancel');
-                  });
+     this.containerService.UpdateContainer(form.value._id , form.value)
+     .subscribe((resp: any)=>{
+
+      alertify.confirm(
+        "Edit Container",
+        "Do You Want Save this Container?",
+        function () {
+         
+          if(resp.ok){
+            alertify.success(resp.message);
+          }
+          
+        },
+        function () {
+          alertify.error("Cancel");
+        }
+      );
+
+     });
 
     }
 
     //Delete Container Method
     onContainerDelete(element){
 
-      alertify.confirm('Delete Container', 
-      'Do You Want Delete this Container', function(){
-        console.log("delete Successful:" , element); 
-        alertify.success('Ok') 
-      } , function(){ 
-                    alertify.error('Cancel');
-                  });
+      this.containerService.DeleteContainer(element._id).subscribe((resp: any)=>{
+
+        alertify.confirm(
+          "Delete Container",
+          "Do You Want Delete this Container?",
+          function () {
+            if(resp.ok){
+              alertify.success(resp.message);
+            }
+          },
+          function () {
+            alertify.error("Cancel");
+          }
+        );
+
+      });
 
     }
 
