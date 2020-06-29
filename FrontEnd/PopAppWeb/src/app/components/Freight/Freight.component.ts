@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Freight } from 'src/app/Models/Freight';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FreigthService } from 'src/app/services/Freigth.service';
 declare let alertify: any;
 
 
@@ -15,13 +16,7 @@ export class FreightComponent implements OnInit {
     //paginator variable
  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
-  freightArr: Freight[] = [{
-    _id: "jgjgjg",
-     code: "code1",
-     description: "description",
-     type: "type",
-     weight: 5
-  }];
+  freightArr: Freight[] = [];
 
   //Freight Form
   FreightForm = new FormGroup({
@@ -33,15 +28,20 @@ export class FreightComponent implements OnInit {
 
   });
 
-  displayColums: string[] =  ["code" , "description" , "type" , "weight" ,  "ver" , "editar" , "eliminar"];
-  dataSource = new MatTableDataSource(this.freightArr);
+  displayColums: string[] =  ["code" ,  "type" , "weight" , "description" ,  "ver" , "editar" , "eliminar"];
+  dataSource;
 
 
 
-  constructor() { }
+  constructor(private freightService: FreigthService) { }
 
   ngOnInit() {
-    this.dataSource.paginator = this.paginator;
+    this.freightService.GetFreight().subscribe((resp: any)=>{
+      this.freightArr = resp.freights;
+      this.dataSource = new MatTableDataSource(this.freightArr);
+      this.dataSource.paginator = this.paginator;
+    });
+    
   }
 
   //methods filters
@@ -58,46 +58,91 @@ export class FreightComponent implements OnInit {
 
   //Get Freight Method
   GetFreight(element){
-      this.FreightForm.setValue(element);
+      this.FreightForm.controls._id.setValue(element._id);
+      this.FreightForm.controls.code.setValue(element.code);
+      this.FreightForm.controls.type.setValue(element.type);
+      this.FreightForm.controls.weight.setValue(element.weight);
+      this.FreightForm.controls.description.setValue(element.description);
   } 
 
   //Add Freight Method
   onFreightAdd(form: FormGroup){
 
-    alertify.confirm('Save Freight', 
-    'Do You Want Save this Freight', function(){
-      console.log(form.value); 
-      form.reset();
-      alertify.success('Ok') 
-    } , function(){ 
-                  alertify.error('Cancel');
-                });
+    const freight: Freight = {
+      code: form.value.code,
+      type: form.value.type,
+      weight: form.value.weight,
+      description: form.value.description
+    };
+
+   this.freightService.CreateFreight(freight).subscribe((resp: any)=>{
+
+    alertify.confirm(
+      "Save Freight",
+      "Do You Want Save this Freight?",
+      function () {
+        
+        if(resp.ok){
+          form.reset();
+        alertify.success(resp.message);
+        }
+        
+      },
+      function () {
+        alertify.error("Cancel");
+      }
+    );
+
+   });
 
   }
 
   //Edit Freight Method
   onFreightEdit(form: FormGroup){
 
-    alertify.confirm('Edit Freight', 
-    'Do You Want Edit this Freight', function(){
-      console.log(form.value); 
-      alertify.success('Ok') 
-    } , function(){ 
-                  alertify.error('Cancel');
-                });
+    this.freightService.UpdateFreight(form.value._id , form.value)
+    .subscribe((resp: any)=>{
+
+      alertify.confirm(
+        "Edit Freight",
+        "Do You Want Edit this Freight",
+        function () {
+          
+          if(resp.Ok){
+            alertify.success(resp.message);
+          }
+         
+        },
+        function () {
+          alertify.error("Cancel");
+        }
+      );
+
+    });
 
   }
 
   //Delete Freigth Method
   onFreightDelete(element){
 
-    alertify.confirm('Delete Freight', 
-    'Do You Want Delete this Freight', function(){
-      console.log("Delete SuccessFul"); 
-      alertify.success('Ok') 
-    } , function(){ 
-                  alertify.error('Cancel');
-                });
+    this.freightService.DeleteFreight(element._id).subscribe((resp: any)=>{
+      
+      alertify.confirm(
+        "Delete Freight",
+        "Do You Want Delete this Freight?",
+        function () {
+          if(resp.Ok){
+            alertify.success(resp.message);
+          }
+         
+        },
+        function () {
+          alertify.error("Cancel");
+        }
+      );
+
+    });
+ 
 
   }
 
