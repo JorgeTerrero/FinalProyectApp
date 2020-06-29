@@ -82,7 +82,7 @@ export class FreightComponent implements OnInit {
       "Do You Want Save this Freight?",
       function () {
         
-        if(resp.ok){
+        if(resp.Ok){
           form.reset();
         alertify.success(resp.message);
         }
