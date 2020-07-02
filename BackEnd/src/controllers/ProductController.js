@@ -4,7 +4,7 @@ const _product = {};
 _product.GetAllProducts = async (req , res) =>{
     try {
 
-        const product = await productModel.find();
+        const product = await productModel.find({status: true});
         res.json({
             ok: true,
             product
