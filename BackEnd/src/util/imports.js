@@ -11,5 +11,6 @@ app.use(require('../routes/FreightRoutes'));
 app.use(require('../routes/CompanyRoutes'));
 app.use(require('../routes/ContainerRoutes'));
 app.use(require('../routes/ProductRoutes'));
+app.use(require('../routes/ScheduleRoutes'));
 
 module.exports = app;

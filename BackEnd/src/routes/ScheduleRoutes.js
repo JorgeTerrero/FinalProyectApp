@@ -1,0 +1,10 @@
+const express = require('express');
+const {Router} = express;
+const router = Router();
+const {GetSchedules , GetSchedule , CreateSchedule , UpdateSchedule , DeleteSchedule} = require('../controllers/ScheduleController');
+router.get('/api/schedule' , GetSchedules);
+router.get('/api/schedule/:id' , GetSchedule);
+router.post('/api/schedule' , CreateSchedule);
+router.put('/api/schedule/:id' , UpdateSchedule);
+router.delete('/api/schedule/:id' , DeleteSchedule);
+module.exports = router;
